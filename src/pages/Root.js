@@ -1,10 +1,23 @@
-import React from "react";
+import React from 'react';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
+
+import Home from 'pages/Home';
+import Login from 'pages/Login';
+
+import MainTemplate from 'templates/MainTemplate';
+
+import { routes } from 'routes';
 
 const Root = () => {
   return (
-    <div>
-      <h1>Hello world</h1>
-    </div>
+    <BrowserRouter>
+      <MainTemplate>
+        <Switch>
+          <Route exact path={routes.home} component={Home} />
+          <Route exact path={routes.login} component={Login} />
+        </Switch>
+      </MainTemplate>
+    </BrowserRouter>
   );
 };
 
