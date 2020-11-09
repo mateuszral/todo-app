@@ -16,7 +16,9 @@ export const colors = {
   grey300: 'hsl(0, 0%, 87%)',
   grey400: 'hsl(0, 0%, 91%)',
   grey500: 'hsl(0, 0%, 97%)',
-  primary: '#FFD226',
+  primary: 'hsl(164, 74%, 40%)',
+  secondary: 'hsla(206, 42%, 13%, 0.9)',
+  tertiary: 'hsla(171, 11%, 66%, 0.25)',
 };
 
 export const font = {
