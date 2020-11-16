@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-const Bar = styled.div`
+const InputBar = styled.div`
   position: absolute;
   left: 0;
   bottom: 0;
@@ -20,4 +20,4 @@ const Bar = styled.div`
   }
 `;
 
-export default Bar;
+export default InputBar;

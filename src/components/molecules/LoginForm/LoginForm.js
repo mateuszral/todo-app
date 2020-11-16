@@ -2,10 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-import Input from 'components/Input/Input';
-import Label from 'components/Label/Label';
-import InputBar from 'components/InputBar/InputBar';
-import Button from 'components/Button/Button';
+import Input from 'components/atoms/Input/Input';
+import Label from 'components/atoms/Label/Label';
+import InputBar from 'components/atoms/InputBar/InputBar';
+import Button from 'components/atoms/Button/Button';
 
 const StyledInputWrapper = styled.div`
   position: relative;

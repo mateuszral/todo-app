@@ -24,6 +24,7 @@ export const colors = {
 export const font = {
   size: {
     header: '4.5rem',
+    smallHeader: '2.4rem',
     paragraph: '1.7rem',
     button: '1.5rem',
   },

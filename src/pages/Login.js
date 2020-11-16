@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
-import Button from 'components/Button/Button';
-import LoginForm from 'components/LoginForm/LoginForm';
+import Button from 'components/atoms/Button/Button';
+import Heading from 'components/atoms/Heading/Heading';
+import LoginForm from 'components/molecules/LoginForm/LoginForm';
 
 const StyledWrapper = styled.div`
   min-height: 100vh;
@@ -33,10 +34,9 @@ const StyledSection = styled.section`
   transition: transform 0.3s ease;
 `;
 
-const StyledHeading = styled.h2`
+const StyledHeading = styled(Heading)`
   text-align: center;
   margin: 40px 0;
-  font-size: 2em;
 `;
 
 const Login = () => {
