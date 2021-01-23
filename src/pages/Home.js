@@ -1,104 +1,121 @@
-import React from 'react';
-import styled, { css } from 'styled-components';
-// import axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
+import { useHistory } from 'react-router-dom';
 
-import Heading from 'components/atoms/Heading/Heading';
+import ButtonIcon from 'components/atoms/ButtonIcon/ButtonIcon';
 import Paragraph from 'components/atoms/Paragraph/Paragraph';
+import StatusMessage from 'components/atoms/StatusMessage/StatusMessage';
+import Card from 'components/molecules/Card/Card';
+import NewTaskBar from 'components/organisms/NewTaskBar/NewTaskBar';
 
-import { tasks } from 'assets/data/tasks';
-import Button from 'components/atoms/Button/Button';
+import plusIcon from 'assets/icons/plus.svg';
 
-const StyledGridWrapper = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-gap: 25px;
-  /* margin-top: 20px; */
-  padding: 80px 40px 20px;
-`;
+import { routes } from 'routes';
+
+import { useTasks, useUser } from 'store';
+
+import { auth } from 'fire';
 
 const StyledWrapper = styled.div`
-  min-height: 380px;
-  box-shadow: 0 10px 30px -10px hsl(0, 0%, 0%, 0.1);
-  border-radius: 10px;
-  overflow: hidden;
-  position: relative;
-  display: grid;
-  grid-template-rows: 1fr 3fr;
+  padding: 0 ${({ theme }) => theme.layout.mobileSidesPadding};
+  margin-bottom: 120px;
+
+  ${({ theme }) => theme.mq.bigTablet} {
+    margin-bottom: 0;
+  }
 `;
 
-const InnerWrapper = styled.div`
-  position: relative;
-  padding: 17px 30px;
-  background-color: ${({ theme, flex }) => (flex ? theme.secondary : theme.primary)};
-  color: ${({ theme }) => theme.white};
-  position: relative;
+const StyledTaskWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 45px;
 
-  ${({ flex }) =>
-    flex &&
-    css`
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    `}
+  ${({ theme }) => theme.mq.bigTablet} {
+    min-height: calc(100vh - 45px);
+  }
 `;
 
-const DateInfo = styled(Paragraph)`
-  margin: 0 0 5px;
-  font-weight: ${({ theme }) => theme.bold};
-  font-size: ${({ theme }) => theme.font.size.button};
+const StyledButtonIcon = styled(ButtonIcon)`
+  position: fixed;
+  bottom: 40px;
+  right: 40px;
+  z-index: ${({ theme }) => theme.zIndex.level2};
+  background-color: ${({ theme }) => theme.primary};
+  background-size: 35%;
+  border-radius: 50%;
+  transform: rotate(${({ isVisible }) => (isVisible ? '225deg' : '0')});
+  transition: transform 0.3s ease;
+  margin-left: 15px;
 `;
-
-const StyledHeading = styled(Heading)`
-  margin: 5px 0 0;
-`;
-
-// const StyledAvatar = styled.img`
-//   width: 86px;
-//   height: 86px;
-//   border: 5px solid ${({ theme }) => theme.twitters};
-//   border-radius: 50px;
-//   position: absolute;
-//   right: 25px;
-//   top: 25px;
-//   z-index: 9999;
-// `;
-
-// const StyledLinkButton = styled.a`
-//   display: block;
-//   width: 47px;
-//   height: 47px;
-//   border-radius: 50px;
-//   background: white url(${LinkIcon}) no-repeat;
-//   background-size: 60%;
-//   background-position: 50%;
-//   position: absolute;
-//   right: 25px;
-//   top: 50%;
-//   transform: translateY(-50%);
-// `;
 
 const Home = () => {
-  // const [tasksList, setTasksList] = useState([]);
+  const [isNewTaskBarVisible, setIsNewTaskBarVisible] = useState(false);
+  const history = useHistory();
 
-  // useEffect(() => {
-  //   axios.get('/tasks.json').then(({ data: { tasks } }) => setTasksList(tasks));
-  // }, []);
+  const toggleNewTaskBar = () => {
+    setIsNewTaskBarVisible((prevState) => !prevState);
+  };
+
+  const closeNewTaskBar = () => isNewTaskBarVisible && setIsNewTaskBarVisible(false);
+
+  const [
+    { tasks, firebaseErr, message },
+    { fetchTasks, addTask, deleteTask, editTask },
+  ] = useTasks();
+
+  const [
+    { userId, firebaseErr: userErr, message: userMessage },
+    { refillData, checkVerificationEmail },
+  ] = useUser();
+
+  useEffect(() => {
+    auth.onAuthStateChanged((user) => {
+      if (!user) {
+        history.push(routes.login);
+      } else {
+        refillData(user);
+        if (checkVerificationEmail(user.emailVerified)) {
+          fetchTasks(user.uid);
+        }
+      }
+    });
+  }, []);
+
+  const error = firebaseErr || userErr;
 
   return (
-    <StyledGridWrapper>
-      {tasks.map(({ title, content, date }) => (
-        <StyledWrapper>
-          <InnerWrapper>
-            <StyledHeading>{title}</StyledHeading>
-            <DateInfo>{date}</DateInfo>
-          </InnerWrapper>
-          <InnerWrapper flex>
-            <Paragraph>{content}</Paragraph>
-            <Button half>ZROBIONE</Button>
-          </InnerWrapper>
-        </StyledWrapper>
-      ))}
-    </StyledGridWrapper>
+    <StyledWrapper>
+      {error ? <StatusMessage error={error}>{message || userMessage}</StatusMessage> : null}
+      <StyledTaskWrapper onClick={closeNewTaskBar}>
+        {tasks.length ? (
+          tasks.map(({ taskId, title, content, date }) => (
+            <Card
+              key={taskId}
+              taskId={taskId}
+              title={title}
+              content={content}
+              date={date}
+              handleDeleteTask={deleteTask}
+              handleEditTask={editTask}
+            />
+          ))
+        ) : (
+          <Paragraph error>Nie masz żadnych zadań.</Paragraph>
+        )}
+      </StyledTaskWrapper>
+      <NewTaskBar
+        isVisible={isNewTaskBarVisible}
+        handleClose={closeNewTaskBar}
+        handleAddingTask={addTask}
+        userId={userId}
+      />
+      <StyledButtonIcon
+        icon={plusIcon}
+        isVisible={isNewTaskBarVisible}
+        onClick={toggleNewTaskBar}
+      />
+    </StyledWrapper>
   );
 };
 

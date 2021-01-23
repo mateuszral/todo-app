@@ -1,0 +1,7 @@
+{
+    "trailing-spaces.trimOnSave": true,
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true,
+    "prettier.configPath": ".prettierrc",
+    "editor.tabSize": 2
+}
