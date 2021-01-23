@@ -19,6 +19,10 @@ export const colors = {
   primary: 'hsl(164, 74%, 40%)',
   secondary: 'hsla(206, 42%, 13%, 0.9)',
   tertiary: 'hsla(171, 11%, 66%, 0.25)',
+  success: 'hsl(89, 79%, 30%)',
+  successBackground: 'hsl(82, 66%, 85%)',
+  error: 'hsl(357, 100%, 42%)',
+  errorBackground: 'hsl(0, 100%, 91%)',
 };
 
 export const font = {

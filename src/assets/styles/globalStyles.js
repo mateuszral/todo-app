@@ -30,11 +30,12 @@ const GlobalStyle = createGlobalStyle`
     cursor: pointer;
     font-family: 'Lato', sans-serif;
   }
-  
+
   ul {
     padding: 0;
     margin: 0;
   }
+
 `;
 
 export default GlobalStyle;
